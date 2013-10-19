@@ -1,11 +1,12 @@
 Mixpanel StatusBoard
 ====================
 
-A simple Sinatra app for sending Mixpanel data to Status Board
+A simple Sinatra app for sending [Mixpanel](https://mixpanel.com/docs/api-documentation/data-export-api#segmentation-default) data to [Status Board](http://panic.com/statusboard/)
 
 
 ### Parameters Supported
 
+```
 api_key: (required) Mixpanel API key
 api_secret: (required) Mixpanel API secret
 event: (required) Mixpanel event to segment
@@ -13,6 +14,7 @@ on: (required) Property segment your event on
 title: (required) Title for StatusBoard
 type: (optional) general,unique,average -- see Mixpanel docs for details
 limit: (optional) max number to return
+```
 
 ### Local Testing
 
