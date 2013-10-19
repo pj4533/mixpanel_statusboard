@@ -60,7 +60,7 @@ Building the URLs for StatusBoard can be annoying, so I wrote a little script to
 ~/projects/mixpanel_statusboard ] ./utils/url_builder.rb               
 
 Enter URL (no http): 
-mpstatus.herokuapp.com
+app.herokuapp.com
 Enter API key: 
 <apikey>
 Enter API secret: 
@@ -78,10 +78,10 @@ Enter Type [default=general]:
 Enter Provider [default=MPStatus]: 
 
 LOCAL:
-curl "http://mpstatus.herokuapp.com/mixpanel?api_key=&api_secret=&on=gt_displayname&title=todays%20givingtree%20users&event=application%20initialized%20after%20authentication&type=general&limit=50"
+curl "http://app.herokuapp.com/mixpanel?api_key=&api_secret=&on=gt_displayname&title=todays%20givingtree%20users&event=application%20initialized%20after%20authentication&type=general&limit=50"
 
 APP:
-panicboard://?url=http%3A%2F%2Fmpstatus.herokuapp.com%2Fmixpanel%3Fapi_key%3D%26api_secret%3D%26on%3Dgt_displayname%26title%3Dtodays%2520givingtree%2520users%26event%3Dapplication%2520initialized%2520after%2520authentication%26type%3Dgeneral%26limit%3D50&panel=table&sourceDisplayName=MPStatus
+panicboard://?url=http%3A%2F%2Fapp.herokuapp.com%2Fmixpanel%3Fapi_key%3D%26api_secret%3D%26on%3Dgt_displayname%26title%3Dtodays%2520givingtree%2520users%26event%3Dapplication%2520initialized%2520after%2520authentication%26type%3Dgeneral%26limit%3D50&panel=table&sourceDisplayName=MPStatus
 ```
 
 Answer the questions and you will get two URLs.  One for local testing, and one for status board.  Email the status board link to yourself, open it on your device, and tap it.  It should open automatically into status board!
