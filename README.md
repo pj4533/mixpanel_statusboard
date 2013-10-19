@@ -46,7 +46,8 @@ bar4,8
 I followed the instructions [here](https://devcenter.heroku.com/articles/getting-started-with-ruby) to deploy to Heroku.  Basically, you can just do:
 
 ```
-heroku create
+heroku create [app name]
+bundle install
 git push heroku master
 ```
 
