@@ -52,3 +52,13 @@ git push heroku master
 ```
 
 Obviously, that is skipping over some, but the steps are very easy for a little sintra app like this.  Just read that link and you'll be going in a few minutes.
+
+### URLs For StatusBoard
+Building the URLs for StatusBoard can be annoying, so I wrote a little script to help you out.  Run this script:
+
+```
+./utils/url_builder.rb
+```
+
+Answer the questions and you will get two URLs.  One for local testing, and one for status board.  Email the status board link to yourself, open it on your device, and tap it.  It should open automatically into status board!
+
