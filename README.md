@@ -3,6 +3,7 @@ Mixpanel StatusBoard
 
 A simple Sinatra app for sending [Mixpanel](https://mixpanel.com/docs/api-documentation/data-export-api#segmentation-default) data to [Status Board](http://panic.com/statusboard/)
 
+![Screenshot](example.png "Screenshot") 
 
 ### Parameters Supported
 
