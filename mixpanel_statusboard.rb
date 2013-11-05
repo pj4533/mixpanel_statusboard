@@ -23,7 +23,8 @@ get '/mixpanel' do
 	config = {api_key: api_key, api_secret: api_secret}
 	client = Mixpanel::Client.new(config)
 
-	t = Time.now
+	t = Time.now.utc - 18000
+
 	today_date_string = t.strftime("%Y-%m-%d")  
 
     response = "80%,20%\n#{title},\n"
