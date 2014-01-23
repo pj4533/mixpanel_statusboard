@@ -43,6 +43,7 @@ get '/mixpanel' do
 	array_to_sort = []
 	data["data"]["values"].each do |prop, value|
 		prop = prop.gsub(",","")
+		prop = prop.gsub("\"","")
 		array_to_sort.push(Hash[:prop => prop, :launches => value[date_string]])
 	end
 
