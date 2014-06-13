@@ -58,7 +58,7 @@ get '/mixpanel_html' do
 			
 			#spacepeopleContainer
 			{
-				width: 506px;
+				width: 634px;
 				height: 506px;
 				text-align: center;
 			}
