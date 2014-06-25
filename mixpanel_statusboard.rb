@@ -7,6 +7,16 @@ get '/mixpanel_html' do
 	api_secret = params[:api_secret]
 	event = params[:event]
 	title = params[:title]
+	width = 698
+	height = 506
+
+	if params[:width]
+		width = params[:width]
+	end
+
+	if params[:height]
+		height = params[:height]
+	end
 
 	html = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">
 <html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\">
@@ -58,8 +68,8 @@ get '/mixpanel_html' do
 			
 			#spacepeopleContainer
 			{
-				width: 698px;
-				height: 506px;
+				width: #{width}px;
+				height: #{height}px;
 				text-align: center;
 			}
 			#spacepeopleContainer *
