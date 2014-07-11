@@ -6,6 +6,12 @@ get '/mixpanel_html' do
 	api_key = params[:api_key]
 	api_secret = params[:api_secret]
 	event = params[:event]
+	
+	event_type = 'general'
+	if params[:event_type]
+		event_type = params[:event_type]		
+	end
+
 	title = params[:title]
 	width = 698
 	height = 506
@@ -112,7 +118,7 @@ get '/mixpanel_html' do
     				document.getElementById('howmany').innerText = req.responseText;
           }
         }
-		    req.open(\"GET\", '/mixpanel_number?api_key=#{api_key}&api_secret=#{api_secret}&event=#{event}', true);
+		    req.open(\"GET\", '/mixpanel_number?api_key=#{api_key}&api_secret=#{api_secret}&event=#{event}&event_type=#{event_type}', true);
 		    req.send(null);
 		}
 
@@ -153,6 +159,11 @@ get '/mixpanel_number' do
 	api_secret = params[:api_secret]
 	event = params[:event]
 
+	event_type = 'general'
+	if params[:event_type]
+		event_type = params[:event_type]		
+	end
+
 	config = {api_key: api_key, api_secret: api_secret}
 	client = Mixpanel::Client.new(config)
 
@@ -163,7 +174,7 @@ get '/mixpanel_number' do
 	data = client.request('events', {
 	  event:     [ event ],
 	  unit:     'day',
-	  type:      'general',
+	  type:      event_type,
 	  interval:  1
 	})
 
