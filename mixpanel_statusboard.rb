@@ -191,6 +191,17 @@ get '/mixpanel' do
 	event = params[:event]
 	on_prop = params[:on]
 	title = params[:title]
+	display_props = params[:display_props]
+
+	layout = "80%,20%"
+	if params[:layout]
+		layout = params[:layout]
+	end
+
+	engage_prop = on_prop
+	if params[:engage_prop]
+		engage_prop = params[:engage_prop]		
+	end
 
 	limit = 50
 	if params[:limit]
@@ -209,7 +220,7 @@ get '/mixpanel' do
 
 	today_date_string = t.strftime("%Y-%m-%d")  
 
-    response = "80%,20%\n#{title},\n"
+    response = "#{layout}\n#{title},\n"
 	data = client.request('segmentation', {
 	  event:     event,
 	  name:      'feature',
@@ -217,20 +228,51 @@ get '/mixpanel' do
 	  type:      type,
 	  from_date: today_date_string,
 	  to_date:   today_date_string,
-	  on:        'properties["' + on_prop + '"]'
+	  on:        "properties[\"#{on_prop}\"]"
 	})
 
 	date_string = data["data"]["series"][0]
 	
-	array_to_sort = []
+	where_string = ""
+	first_time = true
+	prop_array = []
+	launches = Hash[]
 	data["data"]["values"].each do |prop, value|
 		prop = prop.gsub(",","")
 		prop = prop.gsub("\"","")
-		array_to_sort.push(Hash[:prop => prop, :launches => value[date_string]])
+		if first_time
+			where_string = "(properties[\"#{engage_prop}\"] == \"#{prop}\")"
+			first_time = false
+		else
+			where_string = where_string + " or (properties[\"#{engage_prop}\"] == \"#{prop}\")"
+		end
+		prop_array.push(prop)
+		launches[prop] = value[date_string]
+	end
+
+	array_to_sort = []
+	if display_props
+		engagedata = client.request('engage', {
+		  where:        where_string
+		})
+		engagedata["results"].each do |person|
+			response_string = "#{person['$properties'][engage_prop]}"
+			display_props.each do |display_prop|
+				response_string += ",#{person['$properties'][display_prop]}"
+			end
+			response_string += ",#{launches[person['$properties'][engage_prop]]}\n"
+			array_to_sort.push(Hash[:response_string => response_string, :launches => launches[person['$properties'][engage_prop]] ] )
+		end
+	else		
+
+		prop_array.each do |prop|
+			response_string = "#{prop},launches[prop]\n"
+			array_to_sort.push(Hash[:response_string => response_string, :launches => launches[prop] ])
+		end
 	end
 
 	array_to_sort.sort_by { |hsh| hsh[:launches] }.reverse.each do |hsh|
-		response += "#{hsh[:prop]},#{hsh[:launches]}\n"
+		response += hsh[:response_string]
 	end
 
 	response
