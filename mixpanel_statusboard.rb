@@ -251,7 +251,7 @@ get '/mixpanel' do
 	end
 
 	array_to_sort = []
-	if display_props
+	if display_props and prop_array.count > 0
 		engagedata = client.request('engage', {
 		  where:        where_string
 		})
