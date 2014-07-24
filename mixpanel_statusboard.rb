@@ -266,7 +266,7 @@ get '/mixpanel' do
 	else		
 
 		prop_array.each do |prop|
-			response_string = "#{prop},launches[prop]\n"
+			response_string = "#{prop},#{launches[prop]}\n"
 			array_to_sort.push(Hash[:response_string => response_string, :launches => launches[prop] ])
 		end
 	end
