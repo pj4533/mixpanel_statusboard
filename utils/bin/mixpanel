@@ -1,0 +1,5 @@
+#!/usr/bin/env ruby
+require 'url_builder'
+
+url_builder = URLBuilder.new
+url_builder.build
