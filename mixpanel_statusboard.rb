@@ -208,7 +208,7 @@ get '/mixpanel_funnel' do
 		completed += data['data'][date]['analysis']['completion']
 		started += data['data'][date]['analysis']['starting_amount']
 	end
-	percentage = (completed.to_f / started.to_f) * 100
+	percentage = (completed.to_f / started.to_f).round(2) * 100
 	"completed: #{completed}\nstarted: #{started}\npercentage: #{percentage}"
 end
 
