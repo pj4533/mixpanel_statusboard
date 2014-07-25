@@ -3,7 +3,7 @@
 require 'uri'
 require 'cgi'
 require 'commander/import'
-require './version'
+require 'version'
 
 module MixPanelSB
   class URLBuilder
@@ -32,6 +32,14 @@ module MixPanelSB
 
           puts "Enter StatusBoard Title: "
           title = $stdin.gets.chomp.strip
+
+          url_string = URI.escape("http://#{url}/mixpanel_funnel?api_key=#{apikey}&api_secret=#{apisecret}&title=#{title}&funnel_id=#{funnel_id}&unit=day")
+
+          puts "LOCAL:\ncurl \"#{url_string}\"\n\n"
+
+          url_string = CGI.escape(url_string)
+          puts "APP:\npanicboard://?url=#{url_string}&panel=table&sourceDisplayName=MPStatus\n\n"
+
         end
       end
 
