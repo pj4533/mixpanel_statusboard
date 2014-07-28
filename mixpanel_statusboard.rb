@@ -6,10 +6,10 @@ get '/mixpanel_html' do
 	api_key = params[:api_key]
 	api_secret = params[:api_secret]
 	event = params[:event]
-	
+
 	event_type = 'general'
 	if params[:event_type]
-		event_type = params[:event_type]		
+		event_type = params[:event_type]
 	end
 
 	title = params[:title]
@@ -29,37 +29,37 @@ get '/mixpanel_html' do
 	<head>
 		<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf8\" />
 		<meta http-equiv=\"Cache-control\" content=\"no-cache\" />
-		
+
 		<style type=\"text/css\">
 			@font-face
 			{
 				font-family: \"Roadgeek2005SeriesD\";
 				src: url(\"http://panic.com/fonts/Roadgeek 2005 Series D/Roadgeek 2005 Series D.otf\");
 			}
-			
+
 			body, *
 			{
-			
+
 			}
 			body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,textarea,p,blockquote,th,td
-			{ 
+			{
 				margin: 0;
 				padding: 0;
 			}
-				
+
 			fieldset,img
-			{ 
+			{
 				border: 0;
 			}
-			
-				
+
+
 			/* Settin' up the page */
-			
+
 			html, body, #main
 			{
 				overflow: hidden; /* */
 			}
-			
+
 			body
 			{
 				color: white;
@@ -71,7 +71,7 @@ get '/mixpanel_html' do
 			{
 				background: transparent !important;
 			}
-			
+
 			#spacepeopleContainer
 			{
 				width: #{width}px;
@@ -82,7 +82,7 @@ get '/mixpanel_html' do
 			{
 				font-weight: normal;
 			}
-			
+
 			h1
 			{
 				font-size: 240px;
@@ -93,7 +93,7 @@ get '/mixpanel_html' do
 				text-shadow:0px -2px 0px black;
 				text-transform: uppercase;
 			}
-			
+
 			h2
 			{
 				width: 180px;
@@ -105,14 +105,14 @@ get '/mixpanel_html' do
 				text-transform: uppercase;
 			}
 		</style>
-	
+
 		<script type=\"text/javascript\">
 
 		function refresh()
 		{
 		    var req = new XMLHttpRequest();
 	   	 	console.log(\"Refreshing Count...\");
-			
+
         req.onreadystatechange=function() {
           if (req.readyState==4 && req.status==200) {
     				document.getElementById('howmany').innerText = req.responseText;
@@ -129,22 +129,22 @@ get '/mixpanel_html' do
 			{
 				document.getElementById('spacepeopleContainer').style.backgroundColor = 'black';
 			}
-			
+
 			refresh()
 			var int=self.setInterval(function(){refresh()},300000);
 		}
 
 		</script>
 	</head>
-	
+
 	<body onload=\"init()\">
 		<div id=\"main\">
-		
+
 			<div id=\"spacepeopleContainer\">
 
 				<h2>#{title}</h2>
 				<h1 id=\"howmany\"></h1>
-			
+
 			</div><!-- spacepeopleContainer -->
 
 		</div><!-- main -->
@@ -161,7 +161,7 @@ get '/mixpanel_number' do
 
 	event_type = 'general'
 	if params[:event_type]
-		event_type = params[:event_type]		
+		event_type = params[:event_type]
 	end
 
 	config = {api_key: api_key, api_secret: api_secret}
@@ -169,7 +169,7 @@ get '/mixpanel_number' do
 
 	t = Time.now.utc - 18000
 
-	today_date_string = t.strftime("%Y-%m-%d")  
+	today_date_string = t.strftime("%Y-%m-%d")
 
 	data = client.request('events', {
 	  event:     [ event ],
@@ -182,6 +182,34 @@ get '/mixpanel_number' do
 	event_hash = data["data"]["values"][event]
 
 	"#{event_hash[date_string]}"
+end
+
+get '/mixpanel_funnel' do
+	return unless params[:funnel_id]
+
+	api_key = params[:api_key]
+	api_secret = params[:api_secret]
+	funnel_id = params[:funnel_id]
+
+	config = {api_key: api_key, api_secret: api_secret}
+	client = Mixpanel::Client.new(config)
+
+	today = Time.now.utc - 18000
+	data = client.request('funnels', {
+		funnel_id: funnel_id,
+		from_date: '2014-07-14',
+		to_date: today.strftime("%Y-%m-%d")
+	})
+
+	dates = data['meta']['dates']
+	completed = 0
+	started = 0
+	dates.each do |date|
+		completed += data['data'][date]['analysis']['completion']
+		started += data['data'][date]['analysis']['starting_amount']
+	end
+	percentage = (completed.to_f / started.to_f).round(2) * 100
+	"completed: #{completed}\nstarted: #{started}\npercentage: #{percentage}"
 end
 
 get '/mixpanel' do
@@ -200,7 +228,7 @@ get '/mixpanel' do
 
 	engage_prop = on_prop
 	if params[:engage_prop]
-		engage_prop = params[:engage_prop]		
+		engage_prop = params[:engage_prop]
 	end
 
 	limit = 50
@@ -218,7 +246,7 @@ get '/mixpanel' do
 
 	t = Time.now.utc - 18000
 
-	today_date_string = t.strftime("%Y-%m-%d")  
+	today_date_string = t.strftime("%Y-%m-%d")
 
     response = "#{layout}\n#{title},\n"
 	data = client.request('segmentation', {
@@ -232,7 +260,7 @@ get '/mixpanel' do
 	})
 
 	date_string = data["data"]["series"][0]
-	
+
 	where_string = ""
 	first_time = true
 	prop_array = []
@@ -263,10 +291,10 @@ get '/mixpanel' do
 			response_string += ",#{launches[person['$properties'][engage_prop]]}\n"
 			array_to_sort.push(Hash[:response_string => response_string, :launches => launches[person['$properties'][engage_prop]] ] )
 		end
-	else		
+	else
 
 		prop_array.each do |prop|
-			response_string = "#{prop},launches[prop]\n"
+			response_string = "#{prop},#{launches[prop]}\n"
 			array_to_sort.push(Hash[:response_string => response_string, :launches => launches[prop] ])
 		end
 	end
