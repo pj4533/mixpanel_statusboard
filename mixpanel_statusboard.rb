@@ -180,7 +180,17 @@ get '/mixpanel_number' do
 		data = client.request('engage', {})
 
 		"#{data['total']}"
+	elsif event == 'engage_wau'
+		data = client.request('engage', {})
 
+		total_users = data['total']
+
+		data = client.request('engage', {
+			where: "(datetime(#{Time.now.to_i} - 604800) < properties[\"$last_seen\"])"
+			})
+
+		last_week_users = data['total']
+		"#{((last_week_users.to_f / total_users.to_f) * 100.0).to_i }"		
 	else		
 		t = Time.now.utc - 18000
 
