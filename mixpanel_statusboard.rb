@@ -159,6 +159,16 @@ get '/mixpanel_number' do
 	api_secret = params[:api_secret]
 	event = params[:event]
 
+	interval = 1
+	if params[:interval]
+		interval = params[:interval]
+	end
+
+	unit = 'day'
+	if params[:unit]
+		unit = params[:unit]	
+	end
+
 	event_type = 'general'
 	if params[:event_type]
 		event_type = params[:event_type]
@@ -166,22 +176,37 @@ get '/mixpanel_number' do
 
 	config = {api_key: api_key, api_secret: api_secret}
 	client = Mixpanel::Client.new(config)
+	if event == 'engage_total'
+		data = client.request('engage', {})
 
-	t = Time.now.utc - 18000
+		"#{data['total']}"
 
-	today_date_string = t.strftime("%Y-%m-%d")
+	else		
+		t = Time.now.utc - 18000
 
-	data = client.request('events', {
-	  event:     [ event ],
-	  unit:     'day',
-	  type:      event_type,
-	  interval:  1
-	})
+		today_date_string = t.strftime("%Y-%m-%d")
 
-	date_string = data["data"]["series"][0]
-	event_hash = data["data"]["values"][event]
+		data = client.request('events', {
+		  event:     [ event ],
+		  unit:     unit,
+		  type:      event_type,
+		  interval:  interval
+		})
 
-	"#{event_hash[date_string]}"
+		if interval == 1
+			date_string = data["data"]["series"][0]
+			event_hash = data["data"]["values"][event]
+
+			"#{event_hash[date_string]}"
+		else
+			output_number = 0
+			data["data"]["values"][event].each do |unit_string,unitvalue|
+				output_number += unitvalue
+			end
+			"#{output_number}"
+		end
+	end
+
 end
 
 get '/mixpanel_funnel' do
