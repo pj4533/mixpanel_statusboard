@@ -177,16 +177,19 @@ get '/mixpanel_number' do
 	config = {api_key: api_key, api_secret: api_secret}
 	client = Mixpanel::Client.new(config)
 	if event == 'engage_total'
-		data = client.request('engage', {})
-
+		data = client.request('engage', {
+			where: "not properties[\"User Type\"]"
+			})
 		"#{data['total']}"
 	elsif event == 'engage_wau'
-		data = client.request('engage', {})
+		data = client.request('engage', {
+			where: "not properties[\"User Type\"]"
+			})
 
 		total_users = data['total']
 
 		data = client.request('engage', {
-			where: "(datetime(#{Time.now.to_i} - 604800) < properties[\"$last_seen\"])"
+			where: "((datetime(#{Time.now.to_i} - 604800) < properties[\"$last_seen\"])) and (not properties[\"User Type\"])"
 			})
 
 		last_week_users = data['total']
