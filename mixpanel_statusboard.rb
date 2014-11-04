@@ -195,10 +195,10 @@ get '/mixpanel_number' do
 		last_week_users = data['total']
 		"#{((last_week_users.to_f / total_users.to_f) * 100.0).to_i }"		
 	elsif event == 'engage_today'
+		seconds_since_midnight = (Time.now.hour.to_i * 60 * 60) + (Time.now.min.to_i * 60) + (Time.now.sec.to_i)
 		data = client.request('engage', {
-			where: "((datetime(#{Time.now.to_i} - 86400) < properties[\"$last_seen\"])) and (not properties[\"User Type\"])"
+			where: "((datetime(#{Time.now.to_i} - #{seconds_since_midnight}) < properties[\"$last_seen\"])) and (not properties[\"User Type\"])"
 			})
-
 		"#{data['total']}"
 	else		
 		t = Time.now.utc - 18000
