@@ -181,6 +181,19 @@ get '/mixpanel_number' do
 			where: "not properties[\"User Type\"]"
 			})
 		"#{data['total']}"
+	elsif event == 'engage_dau'
+		data = client.request('engage', {
+			where: "not properties[\"User Type\"]"
+			})
+
+		total_users = data['total']
+
+		data = client.request('engage', {
+			where: "((datetime(#{Time.now.to_i} - 86400) < properties[\"$last_seen\"])) and (not properties[\"User Type\"])"
+			})
+
+		last_day_users = data['total']
+		"#{((last_day_users.to_f / total_users.to_f) * 100.0).to_i }"		
 	elsif event == 'engage_wau'
 		data = client.request('engage', {
 			where: "not properties[\"User Type\"]"
